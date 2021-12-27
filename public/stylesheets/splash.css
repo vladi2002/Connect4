@@ -1,0 +1,207 @@
+@import "style.css";
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 0.25fr auto 0.25fr;
+  grid-template-rows: 100vh;
+  position: absolute;
+  width: 100%;
+}
+
+#left {
+  background-image:url(../Photos/pixomatic_1640513212342.png);
+  background-position: right;
+}
+
+#middle {
+  position: relative;
+}
+#title {
+  position: absolute;
+  top: 50px;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  font-size: 60px;
+  color: var(--lightHighlight);
+}
+#campus {
+  background-image:url(../Photos/TU-Delft.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  display: block;
+  filter: blur(3px);
+  -webkit-filter: blur(3px);
+}
+#right {
+  background-image:url(../Photos/pixomatic_1640513212342.png);
+  background-position: right;
+  transform: scaleX(-1);
+}
+/* h1 {
+  position: absolute;
+  font-size: 300%;
+  font-style: verdana;
+  top: 100px;
+  left: 30px;
+} */
+
+/* h1::before {
+  content: "★ ";
+  color: var(--lightHighlight);
+} */
+
+h2 {
+  position: absolute;
+  font-size: 200%;
+  top: 250px;
+  left: 30px;
+}
+/* 
+h2::after {
+  content: " ★";
+  color: var(--lightHighlight);
+}
+
+h3::before {
+  content: "★ ";
+  color: var(--lightHighlight);
+} */
+
+h3 {
+  
+  
+  font-weight: 600;
+}
+
+#decoration-top {
+  position: absolute;
+  top: 50px;
+  left: 30px;
+}
+
+@keyframes wobblySquare {
+  from {
+    height: 24px;
+    width: 79px;
+  }
+  to {
+    height: 25px;
+    width: 80px;
+  }
+}
+
+.square {
+  height: 25px;
+  width: 80px;
+  margin-right: 10px;
+  background-color: var(--lightHighlight);
+  display: inline-block;
+  animation-duration: 1s;
+  animation-name: wobblySquare;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  transition-property: transform;
+  transition-duration: 1s;
+}
+
+.square:hover {
+  background-color: var(--darkHighlight);
+  transform: scale(1.1) rotateZ(-15deg);
+}
+
+.balloon {
+  height: 30vw;
+  width: 30vw;
+  min-height: 300px;
+  min-width: 300px;
+  border-radius: 50%;
+  border: 5px dashed;
+  border-color: var(--lightHighlight);
+}
+
+#b1 {
+  position: absolute;
+  bottom: 10px;
+  right: 50px;
+  background: radial-gradient(#aaa, #fff);
+}
+
+#b2 {
+  position: absolute;
+  bottom: 10px;
+  right: 200px;
+  background: radial-gradient(#888, #aaa);
+}
+
+#b3 {
+  position: absolute;
+  bottom: 10px;
+  right: 350px;
+  background: radial-gradient(#444, #888);
+}
+
+.form-wrapper {
+  display: flex;
+  width: 100%;
+  position: absolute;
+  bottom: 180px;
+  justify-content: center;
+}
+
+button {
+  /* position: absolute; */
+  background-color: var(--lightHighlight);
+  color: var(--text);
+  /* bottom: 180px; */
+  
+  font-size: calc(300% + 2vw);
+  border: none;
+  padding: 30px;
+  z-index: 1;
+  left: 50%;
+  transform: translate(-50, -50);
+}
+
+button:hover {
+  background-color: var(--buttonHover);
+  transition: background-color 2s ease;
+  text-decoration: underline overline;
+}
+
+.flames{
+  width: 100%;
+  position: absolute;
+  top: 200px;
+  display: flex;
+  /* border: 1px solid red; */
+  z-index: 1;
+  justify-content: center;
+}
+
+.flames div {
+  display: flex;
+  /* border: 1px solid blue; */
+}
+
+.flames div img {
+  margin: 10px;
+  width: 130px;
+}
+
+.stats{
+  position: absolute;
+  width: 100%;
+  bottom: 100px;
+  z-index: 1;
+  display: flex;
+  height: 50px;
+  justify-content: center;
+  color: var(--buttonHover);
+}

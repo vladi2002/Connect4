@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--    Note: this file is not in use any longer, it is superseded by splash.ejs which
+        is an almost exact copy (apart from template tags).
+-->
+<html>
+  <head>
+    <title>Connect 4: a two player game</title>
+    <link rel="stylesheet" href="stylesheets/splash.css" />
+  </head>
+  <body>
+    <main>
+      <section id="left">
+        <div id="left1"></div>
+      </section>
+      <section id="middle">
+        <h1 id = "title">Connect 4</h1>
+        <div class="flames">
+          <div><img src="../Photos/flameblack.png"></div>
+          <div><img src="../Photos/flameblack.png"></div>
+          <div><img src="../Photos/flameblack.png"></div>
+          <div><img src="../Photos/flameblack.png"></div>
+        </div>
+        <div id = "campus">
+        </div>
+        <div class="form-wrapper">
+          <form action="/play" method="get">
+            <button type="submit">PLAY</button>
+          </form>
+        </div>
+        <div class="stats">
+        <h3><%= gamesInitialized %> 
+          <%if (gamesInitialized != 1) { %>
+              games
+          <% } else { %>
+              game
+          <% } %>
+          initialized, 
+          <%= gamesCompleted %> 
+          completed
+        </h3>
+        </div>
+    </section>
+      <section id="right">
+          
+      </section>
+    </main>
+  </body>
+</html>
