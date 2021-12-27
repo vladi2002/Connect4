@@ -9,7 +9,7 @@ const messages = require("./public/javascripts/messages");
 
 const gameStatus = require("./statTracker");
 const Game = require("./game");
-
+//comment
 if(process.argv.length < 3) {
   console.log("Error: expected a port as argument (eg. 'node app.js 3000').");
   process.exit(1);
