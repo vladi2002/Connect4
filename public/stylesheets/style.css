@@ -1,47 +1,42 @@
-:root {
-  --darkBG: #555;
-  --lightBG: #aaa; 
-  --text: white;
-  --lightHighlight: #6CA6D9;
-  --darkHighlight: #3966BF;
-  --buttonHover: #1C31A6;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-html,
-body,
-main {
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
+h1{
+    text-align: center;
 }
 
-a {
-  background-color: var(--lightHighlight);
-  color: var(--text);
-  text-decoration: underline overline;
-}
-
-a:hover {
-  background-color: var(--buttonHover);
-}
-
-
-/*
- * Minimum width/height for this game is 800px x 800px
- */
-@media (max-width: 799px), (max-height: 799px) {
-  body::before {
+.game-board{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
-    color: greenyellow;
-    padding: 20px;
-    content: "Your window is too small (at least 800x800px is expected) to play this game. Enlarge the browser window or zoom out to play or disable the CSS @media query.";
-    background-color: black;
-    z-index: 100;
-  }
+    top: 4rem;
+    left: 50%;
+    transform: translate(-50%);
+    width: 650px;
+    height: 600px;
+    background: rgb(7, 106, 255);
+    border: 1px solid black;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.441);
+    padding: 1.5rem;
+}
+
+
+.slots{
+    width: 90px;
+    height: 90px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.reset{
+    position: absolute;
+    top: 80vh;
+    left: 50%;
+    transform: translate(-50%);
+    border: 1px solid black;
+    width: 5rem;
+    text-align: center;
+    cursor: pointer;
 }
