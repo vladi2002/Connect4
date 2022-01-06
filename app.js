@@ -4,11 +4,11 @@ const express = require("express");
 const http = require("http");
 const websocket = require("ws");
 
-const indexRouter = require("./routes/index");
 const messages = require("./public/javascripts/messages");
 
 const gameStatus = require("./statTracker");
 const Game = require("./game");
+const { gamesCompleted } = require("./statTracker");
 //comment
 if(process.argv.length < 3) {
   console.log("Error: expected a port as argument (eg. 'node app.js 3000').");
@@ -20,8 +20,15 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
-app.get("/play", indexRouter);
-app.get("/", indexRouter);
+app.get("/connect4", function (req, res) {
+  res.sendFile("connect4.html", {root: "./public"});
+});
+app.get("/", function (req, res) {
+  res.render("splash.ejs", {
+    gamesInitialized: gameStatus.gamesInitialized,
+    gamesCompleted: gameStatus.gamesCompleted
+  });
+});
 
 const server = http.createServer(app);
 const wss = new websocket.Server({ server });
