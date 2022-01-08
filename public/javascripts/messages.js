@@ -19,6 +19,15 @@
   exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
 
   /*
+   * Server to client: start game (e.g. if second player entered the game)
+   */
+  exports.T_GAME_STARTED ="GAME-STARTED";
+  exports.O_GAME_STARTED = {
+    type: exports.T_GAME_STARTED,
+  };
+  exports.S_GAME_STARTED = JSON.stringify(exports.O_GAME_STARTED);
+
+  /*
    * Server to client: choose target word
    */
   exports.O_CHOOSE = { type: "CHOOSE-WORD" };
@@ -71,5 +80,17 @@
     type: exports.T_GAME_OVER,
     data: null,
   };
+
+    /*
+   * Player B to server OR server to Player A: guessed character
+   */
+    exports.T_PICK_A_SLOT = "PICK-A-SLOT";
+    exports.O_PICK_A_SLOT = {
+      type: exports.T_PICK_A_SLOT,
+      row: null,
+      col: null,
+      color: null,
+    };
+    
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);
 //if exports is undefined, we are on the client; else the server

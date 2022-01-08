@@ -5,18 +5,15 @@ const clickSound = new Audio("../data/click.wav");
 
 /**
  * Game state object
- * @param {*} visibleWordBoard
  * @param {*} sb
  * @param {*} socket
  */
-function GameState(visibleWordBoard, sb, socket) {
+function GameState(sb, socket) {
   this.playerType = null;
-  this.MAX_ALLOWED = Setup.MAX_ALLOWED_GUESSES;
   this.wrongGuesses = 0;
   this.visibleWordArray = null;
   this.alphabet = new Alphabet();
   this.alphabet.initialize();
-  this.visibleWordBoard = visibleWordBoard;
   this.targetWord = null;
   this.statusBar = sb;
   this.socket = socket;
@@ -113,24 +110,14 @@ GameState.prototype.revealAll = function () {
  * Update the game state given the letter that was just clicked.
  * @param {string} clickedLetter
  */
-GameState.prototype.updateGame = function (clickedLetter) {
-  const res = this.alphabet.getLetterInWordIndices(
-    clickedLetter,
-    this.targetWord
-  );
+GameState.prototype.updateGame = function (clickedSlot) {
+  debugger
 
-  //wrong guess
-  if (res.length == 0) {
-    this.incrWrongGuess();
-  } else {
-    this.revealLetters(clickedLetter, res);
-  }
-
-  this.alphabet.makeLetterUnAvailable(clickedLetter);
-  this.visibleWordBoard.setWord(this.visibleWordArray);
-
-  const outgoingMsg = Messages.O_MAKE_A_GUESS;
-  outgoingMsg.data = clickedLetter;
+  changeColor(clickedSlot.charAt(1));
+  const outgoingMsg = Messages.O_PICK_A_SLOT;
+  outgoingMsg.row = clickedSlot.charAt(0);
+  outgoingMsg.col = clickedSlot.charAt(1);
+  outgoingMsg.color = this.playerType === 'A' ? 'red' : 'yellow';
   this.socket.send(JSON.stringify(outgoingMsg));
 
   //is the game complete?
@@ -168,6 +155,52 @@ GameState.prototype.updateGame = function (clickedLetter) {
   }
 };
 
+// var tableRow = document.getElementsByTagName('tr');
+// var tableData = document.getElementsByTagName('td');
+// var playerTurn = document.querySelector('.player-turn');
+// function changeColor(column){
+//   // Get clicked column index
+//   let row = [];
+
+//   for (let i = 5; i > -1; i--){
+//       if (tableRow[i].children[column].style.backgroundColor == 'white'){
+//           row.push(tableRow[i].children[column]);
+//           if (this.playerType === 'A'){
+//               row[0].style.backgroundColor = 'red';
+//               if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()){
+//                   playerTurn.textContent = `Player 1 WINS!!`;
+//                   //playerTurn.style.color = player1Color;
+//                   return alert(`Player 1 WINS!!`);
+//               }else if (drawCheck()){
+//                   playerTurn.textContent = 'DRAW!';
+//                   return alert('DRAW!');
+//               }else{
+//                   playerTurn.textContent = `Player 2's turn`
+//                   // return currentPlayer = 2;
+//                   return;
+//               }
+//           }else{
+//               row[0].style.backgroundColor = 'yellow';
+//               if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()){
+//                   playerTurn.textContent = `Player 2 WINS!!`;
+//                   //playerTurn.style.color = player2Color;
+//                   return alert(`Player2 WINS!!`);
+//               }else if (drawCheck()){
+//                   playerTurn.textContent = 'DRAW!';
+//                   return alert('DRAW!');
+//               }else{
+//                   playerTurn.textContent = `Player1's turn`;
+//                   //return currentPlayer = 1;
+//                   return;
+//               }
+              
+//           }
+//       }
+//   }
+ 
+// }
+
+
 /**
  * Initialize the alphabet board.
  * @param {*} gs
@@ -194,6 +227,31 @@ function AlphabetBoard(gs) {
 }
 
 /**
+ * Initialize the slots table.
+ * @param {*} gs
+ */
+ function SlotsTableSetup(gs) {
+  //only initialize for player that should actually be able to use the board
+  this.initialize = function () {
+    const elements = document.getElementsByTagName('td');
+    Array.from(elements).forEach(function (el) {
+      el.addEventListener("click", function singleClick(e) {
+        const clickedSlot = e.target["id"];
+        clickSound.play();
+
+        gs.updateGame(clickedSlot);
+
+        // /*
+        //  * every letter can only be clicked once;
+        //  * here we remove the event listener when a click happened
+        //  */
+        // el.removeEventListener("click", singleClick, false);
+      });
+    });
+  };
+}
+
+/**
  * Disable the alphabet buttons.
  */
 function disableAlphabetButtons() {
@@ -204,9 +262,19 @@ function disableAlphabetButtons() {
   }
 }
 
+/**
+ * Object representing the status bar.
+ */
+ function StatusBar() {
+  this.setStatus = function(status) {
+    document.getElementById("status").innerHTML = status;
+  };
+}
+
 //set everything up, including the WebSocket
 (function setup() {
-  const socket = new WebSocket(Setup.WEB_SOCKET_URL);
+  //debugger
+  const socket = new WebSocket("ws://localhost:3000");
 
   /*
    * initialize all UI elements of the game:
@@ -218,98 +286,66 @@ function disableAlphabetButtons() {
    */
 
   // @ts-ignore
-  const vw = new VisibleWordBoard();
-  // @ts-ignore
   const sb = new StatusBar();
 
-  //no object, just a function
-  // @ts-ignore
-  createBalloons();
-
-  const gs = new GameState(vw, sb, socket);
-  const ab = new AlphabetBoard(gs);
+  const gs = new GameState(sb, socket);
+  const slotsTableSetup = new SlotsTableSetup(gs);
 
   socket.onmessage = function (event) {
     let incomingMsg = JSON.parse(event.data);
-
-    //set player type
-    if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
-      gs.setPlayerType(incomingMsg.data); //should be "A" or "B"
-
-      //if player type is A, (1) pick a word, and (2) sent it to the server
-      if (gs.getPlayerType() == "A") {
-        disableAlphabetButtons();
-
-        sb.setStatus(Status["player1Intro"]);
-        let validWord = -1;
-        let promptString = Status["prompt"];
-        let res = null;
-
-        while (validWord < 0) {
-          res = prompt(promptString);
-
-          if (res == null) {
-            promptString = Status["prompt"];
-          } else {
-            res = res.toUpperCase(); //game is played with uppercase letters
-
-            if (
-              res.length < Setup.MIN_WORD_LENGTH ||
-              res.length > Setup.MAX_WORD_LENGTH
-            ) {
-              promptString = Status["promptAgainLength"];
-            } else if (/^[a-zA-Z]+$/.test(res) == false) {
-              promptString = Status["promptChars"];
-            }
-            //dictionary has only lowercase entries
-            //TODO: convert the dictionary to uppercase to avoid this extra string conversion cost
-            else if (
-              Object.prototype.hasOwnProperty.call(
-                // @ts-ignore
-                englishDict,
-                res.toLocaleLowerCase()
-              ) == false
-            ) {
-              promptString = Status["promptEnglish"];
-            } else {
-              validWord = 1;
-            }
-          }
-        }
-        sb.setStatus(Status["chosen"] + res);
-        gs.setTargetWord(res);
-        gs.initializeVisibleWordArray(); // initialize the word array, now that we have the word
-        vw.setWord(gs.getVisibleWordArray());
-
-        let outgoingMsg = Messages.O_TARGET_WORD;
-        outgoingMsg.data = res;
-        socket.send(JSON.stringify(outgoingMsg));
-      } else {
-        sb.setStatus(Status["player2IntroNoTargetYet"]);
-      }
+    if (incomingMsg.type == Messages.T_GAME_STARTED) {
+      slotsTableSetup.initialize();
     }
+    
 
-    //Player B: wait for target word and then start guessing ...
-    if (
-      incomingMsg.type == Messages.T_TARGET_WORD &&
-      gs.getPlayerType() == "B"
-    ) {
-      gs.setTargetWord(incomingMsg.data);
+    // //set player type
+    // if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
+    //   gs.setPlayerType(incomingMsg.data); //should be "A" or "B"
 
-      sb.setStatus(Status["player2Intro"]);
-      gs.initializeVisibleWordArray(); // initialize the word array, now that we have the word
-      ab.initialize();
-      vw.setWord(gs.getVisibleWordArray());
-    }
+    //   //if player type is A, (1) pick a word, and (2) sent it to the server
+    //   if (gs.getPlayerType() == "A") {
+    //     disableAlphabetButtons();
 
-    //Player A: wait for guesses and update the board ...
-    if (
-      incomingMsg.type == Messages.T_MAKE_A_GUESS &&
-      gs.getPlayerType() == "A"
-    ) {
-      sb.setStatus(Status["guessed"] + incomingMsg.data);
-      gs.updateGame(incomingMsg.data);
-    }
+    //     sb.setStatus(Status["player1Intro"]);
+    //     let validWord = -1;
+    //     let promptString = Status["prompt"];
+    //     let res = null;
+
+
+    //     sb.setStatus(Status["chosen"] + res);
+    //     gs.setTargetWord(res);
+    //     gs.initializeVisibleWordArray(); // initialize the word array, now that we have the word
+    //     vw.setWord(gs.getVisibleWordArray());
+
+    //     let outgoingMsg = Messages.O_TARGET_WORD;
+    //     outgoingMsg.data = res;
+    //     socket.send(JSON.stringify(outgoingMsg));
+    //   } else {
+    //     sb.setStatus(Status["player2IntroNoTargetYet"]);
+    //   }
+    // }
+
+    // //Player B: wait for target word and then start guessing ...
+    // if (
+    //   incomingMsg.type == Messages.T_TARGET_WORD &&
+    //   gs.getPlayerType() == "B"
+    // ) {
+    //   gs.setTargetWord(incomingMsg.data);
+
+    //   sb.setStatus(Status["player2Intro"]);
+    //   gs.initializeVisibleWordArray(); // initialize the word array, now that we have the word
+    //   slotsTableSetup.initialize();
+    //   vw.setWord(gs.getVisibleWordArray());
+    // }
+
+    // //Player A: wait for guesses and update the board ...
+    // if (
+    //   incomingMsg.type == Messages.T_MAKE_A_GUESS &&
+    //   gs.getPlayerType() == "A"
+    // ) {
+    //   sb.setStatus(Status["guessed"] + incomingMsg.data);
+    //   gs.updateGame(incomingMsg.data);
+    // }
   };
 
   socket.onopen = function () {
