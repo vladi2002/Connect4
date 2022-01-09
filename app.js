@@ -73,15 +73,6 @@ wss.on("connection", function connection(ws) {
   con.send(playerType == "A" ? messages.S_PLAYER_A : messages.S_PLAYER_B);
 
   /*
-   * client B receives the target word (if already available)
-   */
-  // if (playerType == "B" && currentGame.getWord() != null) {
-  //   let msg = messages.O_TARGET_WORD;
-  //   msg.data = currentGame.getWord();
-  //   con.send(JSON.stringify(msg));
-  // }
-
-  /*
    * once we have two players, there is no way back;
    * a new game object is created;
    * if a player now leaves, the game is aborted (player is not preplaced)
@@ -104,8 +95,7 @@ wss.on("connection", function connection(ws) {
     if (!isPlayerA && gameObj.hasTwoConnectedPlayers() && message.toString() == '{}') {
       gameObj.playerA.send(messages.S_GAME_STARTED);
       gameObj.playerB.send(messages.S_GAME_STARTED);
-      // gameObj.playerA.send("O_GAME_STARTED");
-      // gameObj.playerA.send(messages.O_GAME_STARTED);
+      gameObj.playerB.send(messages.S_DISABLE);
     }
     if (isPlayerA && oMsg.type == messages.T_PICK_A_SLOT) {
       gameObj.playerB.send(message);
@@ -128,6 +118,14 @@ wss.on("connection", function connection(ws) {
       gameObj.playerA.send(messages.S_DISABLE);
       gameObj.playerB.send(messages.S_DISABLE);
     }
+    if(oMsg.type == messages.T_GAME_DRAW) {
+      gameObj.setStatus("DRAW");
+      gameObj.playerA.send(messages.S_GAME_DRAW);
+      gameObj.playerB.send(messages.S_GAME_DRAW);
+      gameStatus.gamesCompleted++;
+      gameObj.playerA.send(messages.S_DISABLE);
+      gameObj.playerB.send(messages.S_DISABLE);
+    }
   });
 
   con.on("close", function(code) {
@@ -136,17 +134,19 @@ wss.on("connection", function connection(ws) {
      * source: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
      */
     console.log(`${con["id"]} disconnected ...`);
-
+    const gameObj = websockets[con["id"]];
     if (code == 1001) {
       /*
        * if possible, abort the game; if not, the game is already completed
        */
-      const gameObj = websockets[con["id"]];
+      
 
       if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
         gameObj.setStatus("ABORTED");
         gameStatus.gamesAborted++;
-
+      }
+    }
+    
         /*
          * determine whose connection remains open;
          * close it
@@ -164,8 +164,6 @@ wss.on("connection", function connection(ws) {
         } catch (e) {
           console.log("Player B closing: " + e);
         }
-      }
-    }
   });
 });
 

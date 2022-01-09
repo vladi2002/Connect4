@@ -43,3 +43,42 @@
     align-items: center;
 
 }
+
+.main-container {
+    display: flex;
+    border: solid blue;
+    flex-direction: row;
+    justify-content: center;
+    min-width: 900px;
+    min-height: 650px;
+}
+
+.colourball {
+    width: 90px;
+    height: 90px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 50%;
+    margin: 20px;
+
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    border: 1px solid red;
+    width: 25%;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.left-section {
+    border: 1px solid green;
+    width: 75%;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

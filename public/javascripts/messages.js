@@ -18,6 +18,12 @@
   };
   exports.S_GAME_LOST_BY = JSON.stringify(exports.O_GAME_LOST_BY);
 
+  exports.T_GAME_DRAW = "GAME-DRAW";
+  exports.O_GAME_DRAW = {
+    type: exports.T_GAME_DRAW,
+  };
+  exports.S_GAME_DRAW = JSON.stringify(exports.O_GAME_DRAW);
+
   /*
    * Server to client: abort game (e.g. if second player exited the game)
    */

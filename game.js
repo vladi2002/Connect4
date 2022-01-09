@@ -5,21 +5,14 @@ const game = function(gameID) {
     this.playerA = null;
     this.playerB = null;
     this.id = gameID;
-    // this.tableRow = document.getElementsByTagName('tr');
-    // this.tableCell = document.getElementsByTagName('td');
-    // this.tableSlot = document.querySelector('.slots');
-    // const playerTurn = document.querySelector('.player-turn');
-    // const reset = document.querySelector('.reset');
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
-    // this.playerAColor = 'red';
-    // this.playerBColor = 'yellow';  
 };
 
 game.prototype.transitionStates = { 
     "0 JOINED": 0, 
     "1 JOINED": 1, 
     "2 JOINED": 2,
-    "CONNECTED FOUR": 3,
+    "DRAW": 3,
     "A": 4, //A won
     "B": 5, //B won
     "ABORTED": 6
@@ -58,7 +51,7 @@ game.prototype.transitionMatrix = [
     [0, 1, 0, 0, 0, 0, 0], //0 JOINED
     [1, 0, 1, 0, 0, 0, 0], //1 JOINED
     [0, 0, 0, 1, 0, 0, 1], //2 JOINED (note: once we have two players, there is no way back!)
-    [0, 0, 0, 1, 1, 1, 1], //CONNECTED FOUR
+    [0, 0, 0, 0, 0, 0, 0], //DRAW
     [0, 0, 0, 0, 0, 0, 0], //A WON
     [0, 0, 0, 0, 0, 0, 0], //B WON
     [0, 0, 0, 0, 0, 0, 0] //ABORTED

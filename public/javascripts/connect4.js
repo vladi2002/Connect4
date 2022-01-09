@@ -58,8 +58,9 @@ function changeColor(column, color){
                 row[0].style.backgroundColor = color;
                 result.row = i;
                 if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()){
-                    playerTurn.textContent = `${player1} WINS!!`;
-                    playerTurn.style.color = player1Color;
+                    //if (color == "yellow") playerTurn.textContent = `${player2} WINS!`;
+                    //else  playerTurn.textContent = `${player1} WINS!`;
+                    playerTurn.style.color = color;
                     result.type = "WINNER";
                     return result;
                 }else if (drawCheck()){
@@ -67,7 +68,8 @@ function changeColor(column, color){
                     result.type = "DRAW";
                     return result;
                 }else{
-                    playerTurn.textContent = `${player2}'s turn`
+                    //if (color == "yellow") playerTurn.textContent = `${player2}'s turn`;
+                    //else  playerTurn.textContent = `${player1}'s turn`;
                     currentPlayer = 2;
                     return result;
                 }
@@ -79,13 +81,6 @@ function changeColor(column, color){
 function changeColorCell(row, column, color) {
     const el = document.getElementById(`${row}${column}`);
     el.style.backgroundColor = color;
-}
-
-function disableAllCells() {
-    Array.prototype.forEach.call(tableData, (cell) => {
-        //cell.style.backgroundColor = 'gray';
-        //cell.disabled = true;
-    });
 }
 
 // Array.prototype.forEach.call(tableData, (cell) => {
@@ -162,63 +157,3 @@ resetBtn.addEventListener('click', () => {
     playerTurn.style.color = 'black';
     return (currentPlayer === 1 ? playerTurn.textContent = `${player1}'s turn` : playerTurn.textContent = `${player2}'s turn`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function changeColor(column, color){
-//     // Get clicked column index
-//     let row = [];
-//     let result = {};
-//     for (i = 5; i > -1; i--){
-//         if (tableRow[i].children[column].style.backgroundColor == 'white'){
-//             row.push(tableRow[i].children[column]);
-//             if (currentPlayer === 1){
-//                 row[0].style.backgroundColor = 'red';
-//                 result.row = i;
-//                 result.col = column;
-//                 result.color = 'red';
-//                 if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()){
-//                     playerTurn.textContent = `${player1} WINS!!`;
-//                     playerTurn.style.color = player1Color;
-//                     return alert(`${player1} WINS!!`);
-//                 }else if (drawCheck()){
-//                     playerTurn.textContent = 'DRAW!';
-//                     return alert('DRAW!');
-//                 }else{
-//                     playerTurn.textContent = `${player2}'s turn`
-//                     currentPlayer = 2;
-//                     return result;
-//                 }
-//             }else{
-//                 row[0].style.backgroundColor = 'yellow';
-//                 result.row = i;
-//                 result.col = column;
-//                 result.color = 'red';
-//                 if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()){
-//                     playerTurn.textContent = `${player2} WINS!!`;
-//                     playerTurn.style.color = player2Color;
-//                     return alert(`${player2} WINS!!`);
-//                 }else if (drawCheck()){
-//                     playerTurn.textContent = 'DRAW!';
-//                     return alert('DRAW!');
-//                 }else{
-//                     playerTurn.textContent = `${player1}'s turn`;
-//                     currentPlayer = 2;
-//                     return result;
-//                 }
-                
-//             }
-//         }
-//     }
-   
-// }
