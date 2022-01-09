@@ -107,24 +107,27 @@ wss.on("connection", function connection(ws) {
 
     if(oMsg.type == messages.T_GAME_WON_BY) {
       gameObj.setStatus(oMsg.data);
-      if(oMsg.data == 'A') {
+      gameStatus.gamesCompleted++;
+      if(oMsg.data == 'A') {  
+        gameObj.playerA.send(messages.S_DISABLE);
+        gameObj.playerB.send(messages.S_DISABLE);
         gameObj.playerA.send(messages.S_GAME_WON_BY);
         gameObj.playerB.send(messages.S_GAME_LOST_BY);
       } else {
+        gameObj.playerA.send(messages.S_DISABLE);
+        gameObj.playerB.send(messages.S_DISABLE);
         gameObj.playerB.send(messages.S_GAME_WON_BY);
         gameObj.playerA.send(messages.S_GAME_LOST_BY);
       }
-      gameStatus.gamesCompleted++;
-      gameObj.playerA.send(messages.S_DISABLE);
-      gameObj.playerB.send(messages.S_DISABLE);
+
     }
     if(oMsg.type == messages.T_GAME_DRAW) {
       gameObj.setStatus("DRAW");
-      gameObj.playerA.send(messages.S_GAME_DRAW);
-      gameObj.playerB.send(messages.S_GAME_DRAW);
       gameStatus.gamesCompleted++;
       gameObj.playerA.send(messages.S_DISABLE);
       gameObj.playerB.send(messages.S_DISABLE);
+      gameObj.playerA.send(messages.S_GAME_DRAW);
+      gameObj.playerB.send(messages.S_GAME_DRAW);
     }
   });
 
@@ -139,19 +142,17 @@ wss.on("connection", function connection(ws) {
       /*
        * if possible, abort the game; if not, the game is already completed
        */
-      
-
       if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
         gameObj.setStatus("ABORTED");
         gameStatus.gamesAborted++;
       }
     }
-    
         /*
          * determine whose connection remains open;
          * close it
          */
         try {
+          //gameObj.playerA.send(JSON.stringify(messages.O_DISABLE));
           gameObj.playerA.close();
           gameObj.playerA = null;
         } catch (e) {
@@ -159,6 +160,7 @@ wss.on("connection", function connection(ws) {
         }
 
         try {
+          //gameObj.playerB.send(JSON.stringify(messages.O_DISABLE));
           gameObj.playerB.close();
           gameObj.playerB = null;
         } catch (e) {

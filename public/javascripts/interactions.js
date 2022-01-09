@@ -97,9 +97,16 @@ GameState.prototype.updateGame = function (clickedSlot) {
       let finalMsg = Messages.O_GAME_WON_BY;
       finalMsg.data = this.playerType;
       this.socket.send(JSON.stringify(finalMsg));
+      //this.socket.send(JSON.stringify(Messages.O_DISABLE));
     //this.socket.close();
   } else if (cc.type == "DRAW") {
+      const elements = document.querySelectorAll(".slot");
+      Array.from(elements).forEach(function (el) {
+        // @ts-ignore
+        el.style.pointerEvents = "none";
+      });
       this.socket.send(JSON.stringify(Messages.O_GAME_DRAW));
+      //this.socket.send(JSON.stringify(Messages.O_DISABLE));
   }
 };
 
@@ -200,12 +207,16 @@ GameState.prototype.updateGame = function (clickedSlot) {
       playerTurn.textContent = "Your turn";
     }
     if (incomingMsg.type == Messages.T_GAME_WON_BY) {
+      slotsTableSetup.pauseEventListener();
+      playAgain();
       console.log("Game won by "+ incomingMsg.data);
       sb.setStatus(Status["gameWon"]);
       playerTurn.textContent = "You connected four :)";
       gs.socket.close();
     }
     if (incomingMsg.type == Messages.T_GAME_LOST_BY) {
+      slotsTableSetup.pauseEventListener();
+      playAgain();
       console.log("Game lost by "+ incomingMsg.data);
       sb.setStatus(Status["gameLost"]);
       playerTurn.textContent = "You lost ;( Please try again!";
@@ -213,6 +224,8 @@ GameState.prototype.updateGame = function (clickedSlot) {
       gs.socket.close();
     }
     if (incomingMsg.type == Messages.T_GAME_DRAW) {
+      slotsTableSetup.pauseEventListener();
+      playAgain();
       console.log("Game tie!");
       sb.setStatus(Status["gameTied"]);
       gs.socket.close();
@@ -225,9 +238,6 @@ GameState.prototype.updateGame = function (clickedSlot) {
 
   //server sends a close event only if the game was aborted from some side
   socket.onclose = function () {
-    // if (gs.whoWon() == null) {
-    //   sb.setStatus(Status["aborted"]);
-    // }
     console.log ("Socket closed!");
   };
 

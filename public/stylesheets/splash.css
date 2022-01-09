@@ -10,6 +10,7 @@ main {
   grid-template-rows: 100vh;
   position: absolute;
   width: 100%;
+  min-width: 1130px;
 }
 
 #left {

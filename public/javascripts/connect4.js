@@ -20,7 +20,7 @@ var player2Color = 'yellow';
 var tableRow = document.querySelectorAll('.slot-row');
 var playerTurn = document.querySelector('.player-turn');
 const slots = document.querySelectorAll('.slot');
-const resetBtn = document.querySelector('.reset');
+
 
 function test() {
     console.log("Test");
@@ -83,6 +83,10 @@ function changeColorCell(row, column, color) {
     el.style.backgroundColor = color;
 }
 
+function playAgain() {
+    const playButton = document.getElementById('play-again-id');
+    playButton.style.display = "block";
+}
 // Array.prototype.forEach.call(tableData, (cell) => {
 //     cell.addEventListener('click', changeColor);
 //     // Set all slots to white for new game.
@@ -150,10 +154,10 @@ function drawCheck(){
     }
 }
 
-resetBtn.addEventListener('click', () => {
-    slots.forEach(slot => {
-        slot.style.backgroundColor = 'white';
-    });
-    playerTurn.style.color = 'black';
-    return (currentPlayer === 1 ? playerTurn.textContent = `${player1}'s turn` : playerTurn.textContent = `${player2}'s turn`);
-});
+// resetBtn.addEventListener('click', () => {
+//     slots.forEach(slot => {
+//         slot.style.backgroundColor = 'white';
+//     });
+//     playerTurn.style.color = 'black';
+//     return (currentPlayer === 1 ? playerTurn.textContent = `${player1}'s turn` : playerTurn.textContent = `${player2}'s turn`);
+// });

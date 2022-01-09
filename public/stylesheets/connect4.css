@@ -21,21 +21,29 @@
 }
 
 .slot:hover {
-    background-color: turquoise;
+    border: 6px solid blue;
 }
 
-.reset{
-    border: 1px solid black;
-    width: 5rem;
+.play-again{
+    /* //border: 1px solid black; */
+    width: 8rem;
     text-align: center;
     cursor: pointer;
+    display: none;
+    height: 28px;
+    background: #4E9CAF;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    line-height: 25px;
+    text-decoration-line: none;
 }
 
 .status-class {
     /* border: 1px solid blue; */
     margin: 5px;
     text-align: center;
-    
+
 }
 .container {
     display: flex;
@@ -46,7 +54,6 @@
 
 .main-container {
     display: flex;
-    border: solid blue;
     flex-direction: row;
     justify-content: center;
     min-width: 900px;
@@ -66,14 +73,13 @@
 .right-section {
     display: flex;
     align-items: center;
-    border: 1px solid red;
     width: 25%;
     flex-direction: column;
     justify-content: space-around;
+    padding-right: 20px;
 }
 
 .left-section {
-    border: 1px solid green;
     width: 75%;
 }
 
