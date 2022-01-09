@@ -16,9 +16,5 @@
  */
 
 (function (exports) {
-  exports.MAX_ALLOWED_GUESSES = 10; /* Maximum number of guesses */
-  exports.MIN_WORD_LENGTH = 5; /* Minimum allowed word length */
-  exports.MAX_WORD_LENGTH = 15; /* Maximum allowed word length */
   exports.WEB_SOCKET_URL = "ws://localhost:3000"; /* WebSocket URL */
-  exports.HIDDEN_CHAR = "☃"; /* Hidden char of the UI */
 })(typeof exports === "undefined" ? (this.Setup = {}) : exports);

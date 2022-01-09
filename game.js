@@ -12,7 +12,7 @@ const game = function(gameID) {
     // const reset = document.querySelector('.reset');
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
     // this.playerAColor = 'red';
-    // this.playerBColor = 'yellow';
+    // this.playerBColor = 'yellow';  
 };
 
 game.prototype.transitionStates = { 

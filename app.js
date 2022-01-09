@@ -9,6 +9,7 @@ const messages = require("./public/javascripts/messages");
 const gameStatus = require("./statTracker");
 const Game = require("./game");
 const { gamesCompleted } = require("./statTracker");
+//const game = require("./game");
 //comment
 if(process.argv.length < 3) {
   console.log("Error: expected a port as argument (eg. 'node app.js 3000').");
@@ -98,10 +99,8 @@ wss.on("connection", function connection(ws) {
    */
   con.on("message", function incoming(message) {
     const oMsg = JSON.parse(message.toString());
-
     const gameObj = websockets[con["id"]];
     const isPlayerA = gameObj.playerA == con ? true : false;
-    console.log(message);
     if (!isPlayerA && gameObj.hasTwoConnectedPlayers() && message.toString() == '{}') {
       gameObj.playerA.send(messages.S_GAME_STARTED);
       gameObj.playerB.send(messages.S_GAME_STARTED);
@@ -109,33 +108,26 @@ wss.on("connection", function connection(ws) {
       // gameObj.playerA.send(messages.O_GAME_STARTED);
     }
     if (isPlayerA && oMsg.type == messages.T_PICK_A_SLOT) {
-      debugger
       gameObj.playerB.send(message);
+      gameObj.playerA.send(messages.S_DISABLE);
     } else if (!isPlayerA && oMsg.type == messages.T_PICK_A_SLOT) {
-      debugger
       gameObj.playerA.send(message);
+      gameObj.playerB.send(messages.S_DISABLE);
     }
-    // if (isPlayerA) {
-      
-    // } else {
-    //   /*
-    //    * player B can make a guess;
-    //    * this guess is forwarded to A
-    //    */
-    //   if (oMsg.type == messages.T_MAKE_A_GUESS) {
-    //     gameObj.playerA.send(message);
-    //     gameObj.setStatus("CHAR GUESSED");
-    //   }
 
-    //   /*
-    //    * player B can state who won/lost
-    //    */
-    //   if (oMsg.type == messages.T_GAME_WON_BY) {
-    //     gameObj.setStatus(oMsg.data);
-    //     //game was won by somebody, update statistics
-    //     gameStatus.gamesCompleted++;
-    //   }
-    // }
+    if(oMsg.type == messages.T_GAME_WON_BY) {
+      gameObj.setStatus(oMsg.data);
+      if(oMsg.data == 'A') {
+        gameObj.playerA.send(messages.S_GAME_WON_BY);
+        gameObj.playerB.send(messages.S_GAME_LOST_BY);
+      } else {
+        gameObj.playerB.send(messages.S_GAME_WON_BY);
+        gameObj.playerA.send(messages.S_GAME_LOST_BY);
+      }
+      gameStatus.gamesCompleted++;
+      gameObj.playerA.send(messages.S_DISABLE);
+      gameObj.playerB.send(messages.S_DISABLE);
+    }
   });
 
   con.on("close", function(code) {

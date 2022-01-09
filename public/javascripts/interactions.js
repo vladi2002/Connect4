@@ -10,6 +10,7 @@ const clickSound = new Audio("../data/click.wav");
  */
 function GameState(sb, socket) {
   this.playerType = null;
+  this.color = null;
   this.wrongGuesses = 0;
   this.visibleWordArray = null;
   this.alphabet = new Alphabet();
@@ -41,6 +42,14 @@ GameState.prototype.getPlayerType = function () {
  */
 GameState.prototype.setPlayerType = function (p) {
   this.playerType = p;
+};
+
+GameState.prototype.getColor = function () {
+  return this.color;
+};
+
+GameState.prototype.setColor = function (c) {
+  this.color = c;
 };
 
 /**
@@ -111,47 +120,45 @@ GameState.prototype.revealAll = function () {
  * @param {string} clickedLetter
  */
 GameState.prototype.updateGame = function (clickedSlot) {
-  debugger
-
-  changeColor(clickedSlot.charAt(1));
+  const cc = changeColor(clickedSlot.charAt(1), this.getColor());
   const outgoingMsg = Messages.O_PICK_A_SLOT;
-  outgoingMsg.row = clickedSlot.charAt(0);
-  outgoingMsg.col = clickedSlot.charAt(1);
-  outgoingMsg.color = this.playerType === 'A' ? 'red' : 'yellow';
+  // outgoingMsg.row = clickedSlot.charAt(0);
+  // outgoingMsg.col = clickedSlot.charAt(1);
+  // outgoingMsg.color = this.playerType === 'A' ? 'red' : 'yellow';
+  outgoingMsg.row = cc.row;
+  outgoingMsg.col = cc.col;
+  outgoingMsg.color = cc.color;
   this.socket.send(JSON.stringify(outgoingMsg));
 
-  //is the game complete?
-  const winner = this.whoWon();
+  // //is the game complete?
+  // const winner = this.whoWon();
 
-  if (winner != null) {
-    this.revealAll();
+  if (cc.type == "WINNER") {
 
     /* disable further clicks by cloning each alphabet
      * letter and not adding an event listener; then
      * replace the original node through some DOM logic
      */
-    const elements = document.querySelectorAll(".letter");
-    Array.from(elements).forEach(function (el) {
-      // @ts-ignore
-      el.style.pointerEvents = "none";
-    });
+    // const elements = document.querySelectorAll(".slot");
+    // Array.from(elements).forEach(function (el) {
+    //   // @ts-ignore
+    //   el.style.pointerEvents = "none";
+    // });
 
-    let alertString;
-    if (winner == this.playerType) {
-      alertString = Status["gameWon"];
-    } else {
-      alertString = Status["gameLost"];
-    }
-    alertString += Status["playAgain"];
-    this.statusBar.setStatus(alertString);
+    // let alertString;
+    // if (winner == this.playerType) {
+    //   alertString = Status["gameWon"];
+    // } else {
+    //   alertString = Status["gameLost"];
+    // }
+    // alertString += Status["playAgain"];
+    // this.statusBar.setStatus(alertString);
 
-    //player B sends final message
-    if (this.playerType == "B") {
+    //player sends final message
       let finalMsg = Messages.O_GAME_WON_BY;
-      finalMsg.data = winner;
+      finalMsg.data = this.playerType;
       this.socket.send(JSON.stringify(finalMsg));
-    }
-    this.socket.close();
+    //this.socket.close();
   }
 };
 
@@ -234,7 +241,9 @@ function AlphabetBoard(gs) {
   //only initialize for player that should actually be able to use the board
   this.initialize = function () {
     const elements = document.getElementsByTagName('td');
+
     Array.from(elements).forEach(function (el) {
+      el.style.backgroundColor = "white";
       el.addEventListener("click", function singleClick(e) {
         const clickedSlot = e.target["id"];
         clickSound.play();
@@ -247,6 +256,22 @@ function AlphabetBoard(gs) {
         //  */
         // el.removeEventListener("click", singleClick, false);
       });
+    });
+  };
+
+  this.pauseEventListener = function () {
+    const elements = document.getElementsByTagName('td');
+
+    Array.from(elements).forEach(function (el) {
+        el.style.pointerEvents = "none";
+    });
+  };
+
+  this.restoreEventListener = function () {
+    const elements = document.getElementsByTagName('td');
+
+    Array.from(elements).forEach(function (el) {
+        el.style.pointerEvents = "auto";
     });
   };
 }
@@ -273,7 +298,6 @@ function disableAlphabetButtons() {
 
 //set everything up, including the WebSocket
 (function setup() {
-  //debugger
   const socket = new WebSocket("ws://localhost:3000");
 
   /*
@@ -285,6 +309,7 @@ function disableAlphabetButtons() {
    * the GameState object coordinates everything
    */
 
+
   // @ts-ignore
   const sb = new StatusBar();
 
@@ -293,11 +318,33 @@ function disableAlphabetButtons() {
 
   socket.onmessage = function (event) {
     let incomingMsg = JSON.parse(event.data);
+    console.log('incomingMsg  ', incomingMsg);
+    slotsTableSetup.restoreEventListener();
+    if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
+      gs.setPlayerType(incomingMsg.data);
+      gs.setColor(gs.getPlayerType() == 'A' ? 'red' : 'yellow');
+      
+    }
     if (incomingMsg.type == Messages.T_GAME_STARTED) {
       slotsTableSetup.initialize();
     }
-    
-
+    if (incomingMsg.type == Messages.T_DISABLE) {
+      slotsTableSetup.pauseEventListener();
+    }
+    if (incomingMsg.type == Messages.T_PICK_A_SLOT) {
+      
+      changeColorCell(incomingMsg.row, incomingMsg.col, incomingMsg.color);
+    }
+    if (incomingMsg.type == Messages.T_GAME_WON_BY) {
+      console.log("Game won by "+ incomingMsg.data);
+      sb.setStatus(Status["gameWon"]);
+      gs.socket.close();
+    }
+    if (incomingMsg.type == Messages.T_GAME_LOST_BY) {
+      console.log("Game lost by "+ incomingMsg.data);
+      sb.setStatus(Status["gameLost"]);
+      gs.socket.close();
+    }
     // //set player type
     // if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
     //   gs.setPlayerType(incomingMsg.data); //should be "A" or "B"
@@ -354,9 +401,10 @@ function disableAlphabetButtons() {
 
   //server sends a close event only if the game was aborted from some side
   socket.onclose = function () {
-    if (gs.whoWon() == null) {
-      sb.setStatus(Status["aborted"]);
-    }
+    // if (gs.whoWon() == null) {
+    //   sb.setStatus(Status["aborted"]);
+    // }
+    console.log ("Socket closed!");
   };
 
   socket.onerror = function () {};

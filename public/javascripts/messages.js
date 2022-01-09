@@ -9,6 +9,14 @@
     type: exports.T_GAME_WON_BY,
     data: null,
   };
+  exports.S_GAME_WON_BY = JSON.stringify(exports.O_GAME_WON_BY);
+
+  exports.T_GAME_LOST_BY = "GAME-LOST-BY";
+  exports.O_GAME_LOST_BY = {
+    type: exports.T_GAME_LOST_BY,
+    data: null,
+  };
+  exports.S_GAME_LOST_BY = JSON.stringify(exports.O_GAME_LOST_BY);
 
   /*
    * Server to client: abort game (e.g. if second player exited the game)
@@ -27,11 +35,12 @@
   };
   exports.S_GAME_STARTED = JSON.stringify(exports.O_GAME_STARTED);
 
-  /*
-   * Server to client: choose target word
-   */
-  exports.O_CHOOSE = { type: "CHOOSE-WORD" };
-  exports.S_CHOOSE = JSON.stringify(exports.O_CHOOSE);
+  exports.T_DISABLE ="PLAY-DISABLED";
+  exports.O_DISABLE = {
+    type: exports.T_DISABLE,
+  };
+  exports.S_DISABLE = JSON.stringify(exports.O_DISABLE);
+
 
   /*
    * Server to client: set as player A
@@ -51,26 +60,6 @@
     data: "B",
   };
   exports.S_PLAYER_B = JSON.stringify(exports.O_PLAYER_B);
-
-  /*
-   * Player A to server OR server to Player B: this is the target word
-   */
-  exports.T_TARGET_WORD = "SET-TARGET-WORD";
-  exports.O_TARGET_WORD = {
-    type: exports.T_TARGET_WORD,
-    data: null,
-  };
-  //exports.S_TARGET_WORD does not exist, as we always need to fill the data property
-
-  /*
-   * Player B to server OR server to Player A: guessed character
-   */
-  exports.T_MAKE_A_GUESS = "MAKE-A-GUESS";
-  exports.O_MAKE_A_GUESS = {
-    type: exports.T_MAKE_A_GUESS,
-    data: null,
-  };
-  //exports.S_MAKE_A_GUESS does not exist, as data needs to be set
 
   /*
    * Server to Player A & B: game over with result won/loss
