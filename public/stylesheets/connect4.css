@@ -3,7 +3,7 @@
 .game-board{
     width: 650px;
     height: 600px;
-    background: rgb(7, 106, 255);
+    background: #2E8BC0;
     border: 1px solid black;
     box-shadow: 5px 5px rgba(0, 0, 0, 0.441);
     padding: 1.5rem;
@@ -21,7 +21,7 @@
 }
 
 .slot:hover {
-    border: 6px solid blue;
+    border: 6px solid #2B3C6B;
 }
 
 .play-again{
@@ -30,8 +30,9 @@
     text-align: center;
     cursor: pointer;
     display: none;
-    height: 28px;
-    background: #4E9CAF;
+    height: 40px;
+    width: 200px;
+    background: #B1D4E0;
     border-radius: 5px;
     color: white;
     font-weight: bold;
@@ -39,12 +40,7 @@
     text-decoration-line: none;
 }
 
-.status-class {
-    /* border: 1px solid blue; */
-    margin: 5px;
-    text-align: center;
 
-}
 .container {
     display: flex;
     flex-direction: column;
@@ -60,15 +56,76 @@
     min-height: 650px;
 }
 
-.colourball {
-    width: 90px;
-    height: 90px;
-    background: white;
-    border: 1px solid black;
+.colourball-yellow {
+    display: none;
+    width: 100px;
+    height: 100px;
+    background: yellow;
+    /* border: 1px solid black; */
     border-radius: 50%;
     margin: 20px;
-
+    /* background: radial-gradient(circle at 20px 10px, #333, #fff); */
+    /* shadow: has no offset (equal shadow on all sides) and a large blue value */
+    box-shadow: 0 0 25px #fff;
+    animation: flicker-yellow 1s infinite;
 }
+
+.colourball-red {
+    display: none;
+    width: 100px;
+    height: 100px;
+    background: red;
+    /* border: 1px solid black; */
+    border-radius: 50%;
+    margin: 20px;
+    /* background: radial-gradient(circle at 20px 10px, #333, #fff); */
+    /* shadow: has no offset (equal shadow on all sides) and a large blue value */
+    box-shadow: 0 0 25px #fff;
+    animation: flicker-red 1s infinite;
+}
+  
+  @keyframes flicker {
+    0% {
+      box-shadow: 0 0 25px #fff;
+    }
+    25% {
+      box-shadow: 0 0 60px #fff;
+    }
+    50% {
+      box-shadow: 0 0 50px #fff;
+    }
+    90% {
+      box-shadow: 0 0 27px #fff;
+    }
+  }
+  @keyframes flicker-red {
+    0% {
+      box-shadow: 0 0 25px red;
+    }
+    25% {
+      box-shadow: 0 0 60px red;
+    }
+    50% {
+      box-shadow: 0 0 50px red;
+    }
+    90% {
+      box-shadow: 0 0 27px red;
+    }
+  }
+  @keyframes flicker-yellow {
+    0% {
+      box-shadow: 0 0 25px yellow;
+    }
+    25% {
+      box-shadow: 0 0 60px yellow;
+    }
+    50% {
+      box-shadow: 0 0 50px yellow;
+    }
+    90% {
+      box-shadow: 0 0 27px yellow;
+    }
+  }
 
 .right-section {
     display: flex;
@@ -87,4 +144,41 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* border: 1px solid black; */
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.441);
+    min-width: 45px;
+    border-radius: 5px;
+}
+
+.player-turn-wrapper {
+    /* margin-bottom: 10px; */
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    background-color: #2E8BC0;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.status-class {
+    /* border: 1px solid blue; */
+    text-align: center;
+    padding: 10px;
+    background-color: #3fa3dd;
+    width: 100%;
+    height: auto;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+
+body {
+    background-image:url(../Photos/Blurred-Windmills.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    /* filter: blur(3px);
+    -webkit-filter: blur(3px); */
 }

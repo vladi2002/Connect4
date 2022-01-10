@@ -9,11 +9,12 @@
 </head>
 <body>
     <main class="main-container">
+        <!-- <div id="tulips"></div> -->
         <section class="left-section"> 
             <h1>Connect Four</h1>
             <div class="container">
                 
-                <div class="game-board">
+                <div class="game-board" id="board">
                     <table>
                         <tr class="slot-row">
                             <td id="00" class="slot"></td>
@@ -76,10 +77,11 @@
         </section>
         <section class="right-section">
             <div class="player-info">
-                <h3 class="player-turn"></h3>
-                <section id="status" class="status-class">Wait for another player to join to start the game.</section>
+                <div class="player-turn-wrapper"><h3 class="player-turn"></h3></div>
+                <div id="status" class="status-class"><h4>Wait for another player to join to start the game.</h4></div>
             </div>
-            <div class="colourball" id="player-ball"></div>
+            <div class="colourball-red" id="player-ball-red"></div>
+            <div class="colourball-yellow" id="player-ball-yellow"></div>
             <div>
                 <a href="/connect4" class="play-again" id="play-again-id">Play again</a>
             </div>

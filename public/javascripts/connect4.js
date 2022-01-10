@@ -2,17 +2,17 @@
 // while (!player1){
 //     var player1 = prompt('Player One: Enter your name. You will be red.');
 // };
-var player1 = "Player 1";
-var player1Color = 'red';
+// var player1 = "Player 1";
+// var player1Color = 'red';
 
-// while (!player2){
-//     var player2 = prompt('Player Two: Enter your name. You will be yellow.');
-// };
+// // while (!player2){
+// //     var player2 = prompt('Player Two: Enter your name. You will be yellow.');
+// // };
 
-var player2 = "Player 2";
-var player2Color = 'yellow';
+// var player2 = "Player 2";
+// var player2Color = 'yellow';
 
-// Selectors
+// // Selectors
 
 
 // var tableRow = document.getElementsByTagName('tr');
@@ -27,9 +27,9 @@ function test() {
 }
 
 
-var currentPlayer = 1;
+
 let winner;
-playerTurn.textContent = `${player1}'s turn!`
+playerTurn.textContent = `Player 1's turn!`
 
 // Log cell coordinates when clicked
 
@@ -58,8 +58,6 @@ function changeColor(column, color){
                 row[0].style.backgroundColor = color;
                 result.row = i;
                 if (horizontalCheck() || verticalCheck() || diagonalCheck() || diagonalCheck2()){
-                    //if (color == "yellow") playerTurn.textContent = `${player2} WINS!`;
-                    //else  playerTurn.textContent = `${player1} WINS!`;
                     playerTurn.style.color = color;
                     result.type = "WINNER";
                     return result;
@@ -68,9 +66,6 @@ function changeColor(column, color){
                     result.type = "DRAW";
                     return result;
                 }else{
-                    //if (color == "yellow") playerTurn.textContent = `${player2}'s turn`;
-                    //else  playerTurn.textContent = `${player1}'s turn`;
-                    currentPlayer = 2;
                     return result;
                 }
         }
@@ -87,11 +82,6 @@ function playAgain() {
     const playButton = document.getElementById('play-again-id');
     playButton.style.display = "block";
 }
-// Array.prototype.forEach.call(tableData, (cell) => {
-//     cell.addEventListener('click', changeColor);
-//     // Set all slots to white for new game.
-//     cell.style.backgroundColor = 'white';
-// });
 
 function colorMatchCheck(one, two, three, four){
     return (one === two && one === three && one === four && one !== 'white' && one !== undefined);
@@ -153,11 +143,3 @@ function drawCheck(){
         return true;
     }
 }
-
-// resetBtn.addEventListener('click', () => {
-//     slots.forEach(slot => {
-//         slot.style.backgroundColor = 'white';
-//     });
-//     playerTurn.style.color = 'black';
-//     return (currentPlayer === 1 ? playerTurn.textContent = `${player1}'s turn` : playerTurn.textContent = `${player2}'s turn`);
-// });

@@ -187,7 +187,14 @@ GameState.prototype.updateGame = function (clickedSlot) {
     if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
       gs.setPlayerType(incomingMsg.data);
       gs.setColor(gs.getPlayerType() == 'A' ? 'red' : 'yellow');
-      document.getElementById('player-ball').style.backgroundColor = gs.getColor();
+      // document.getElementById('player-ball').style.backgroundColor = gs.getColor();
+      if (gs.getPlayerType() == 'A' ) {
+        document.getElementById('player-ball-red').style.display = 'block';
+      } else {
+        document.getElementById('player-ball-yellow').style.display = 'block';
+      }
+      // debugger
+      // document.getElementById('player-ball').style.animation = gs.getColor() == "red" ? "flicker-red" : "flicker-yellow";
       playerTurn.textContent = gs.getPlayerType() == 'A' ? "Player 1" : "Player 2";
     }
     if (incomingMsg.type == Messages.T_GAME_STARTED) {
@@ -198,10 +205,12 @@ GameState.prototype.updateGame = function (clickedSlot) {
     }
     if (incomingMsg.type == Messages.T_DISABLE) {
       slotsTableSetup.pauseEventListener();
+      document.getElementById('board').style.background = "grey";
       sb.setStatus(Status["turnPending"]);
       playerTurn.textContent = "Opponent's turn";
     }
     if (incomingMsg.type == Messages.T_PICK_A_SLOT) {
+      document.getElementById('board').style.background = "#2E8BC0";
       changeColorCell(incomingMsg.row, incomingMsg.col, incomingMsg.color);
       sb.setStatus(Status["turnActive"]);
       playerTurn.textContent = "Your turn";
