@@ -95,7 +95,7 @@ wss.on("connection", function connection(ws) {
       gameObj.playerB.send(messages.S_GAME_STARTED);
       setTimeout( function() {
         gameObj.playerB.send(messages.S_DISABLE);
-      }, 2500);
+      }, 2000);
     }
     if (isPlayerA && oMsg.type == messages.T_PICK_A_SLOT) {
       gameObj.playerB.send(message);
