@@ -28,16 +28,18 @@
           </form>
         </div>
         <div class="stats">
-        <h3><%= gamesInitialized %> 
-          <%if (gamesInitialized != 1) { %>
-              games
-          <% } else { %>
+          <div class="stats-box">
+            <h3><%= gamesInitialized %> 
+              <%if (gamesInitialized != 1) { %>
+                games
+                <% } else { %>
               game
-          <% } %>
-          initialized, 
-          <%= gamesCompleted %> 
-          completed
-        </h3>
+              <% } %>
+              initialized, 
+              <%= gamesCompleted %> 
+              completed
+            </h3>
+          </div>
         </div>
     </section>
       <section id="right">
