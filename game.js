@@ -18,10 +18,12 @@ game.prototype.transitionStates = {
     "ABORTED": 6
 };
 
+//shows whether the current game has 2 players
 game.prototype.hasTwoConnectedPlayers = function() {
     return this.gameState == "2 JOINED";
 };
 
+//adds a player p to the game if it's possible and sets the game's status accordingly
 game.prototype.addPlayer = function(p) {
     if (this.gameState != "0 JOINED" && this.gameState != "1 JOINED") {
       return new Error(

@@ -1,5 +1,3 @@
-//@ts-check
-
 const express = require("express");
 const http = require("http");
 const websocket = require("ws");
@@ -9,8 +7,8 @@ const messages = require("./public/javascripts/messages");
 const gameStatus = require("./statTracker");
 const Game = require("./game");
 const { gamesCompleted } = require("./statTracker");
-//const game = require("./game");
-//comment
+
+//if we've provided less words
 if(process.argv.length < 3) {
   console.log("Error: expected a port as argument (eg. 'node app.js 3000').");
   process.exit(1);
@@ -21,6 +19,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
+//adjust the routing of the game
 app.get("/connect4", function (req, res) {
   res.sendFile("connect4.html", {root: "./public"});
 });
@@ -79,13 +78,12 @@ wss.on("connection", function connection(ws) {
    */
   if (currentGame.hasTwoConnectedPlayers()) {
     currentGame = new Game(gameStatus.gamesInitialized++);
-
   }
 
   /*
    * message coming in from a player:
    *  1. determine the game object
-   *  2. determine the opposing player OP
+   *  2. determine the opposing players OP
    *  3. send the message to OP
    */
   con.on("message", function incoming(message) {
@@ -95,7 +93,9 @@ wss.on("connection", function connection(ws) {
     if (!isPlayerA && gameObj.hasTwoConnectedPlayers() && message.toString() == '{}') {
       gameObj.playerA.send(messages.S_GAME_STARTED);
       gameObj.playerB.send(messages.S_GAME_STARTED);
-      gameObj.playerB.send(messages.S_DISABLE);
+      setTimeout( function() {
+        gameObj.playerB.send(messages.S_DISABLE);
+      }, 2500);
     }
     if (isPlayerA && oMsg.type == messages.T_PICK_A_SLOT) {
       gameObj.playerB.send(message);
@@ -131,6 +131,7 @@ wss.on("connection", function connection(ws) {
     }
   });
 
+  //determine what happens when we abort the game or a client's connection is disturbed
   con.on("close", function(code) {
     /*
      * code 1001 means almost always closing initiated by the client;
@@ -152,7 +153,6 @@ wss.on("connection", function connection(ws) {
          * close it
          */
         try {
-          //gameObj.playerA.send(JSON.stringify(messages.O_DISABLE));
           gameObj.playerA.close();
           gameObj.playerA = null;
         } catch (e) {
@@ -160,7 +160,6 @@ wss.on("connection", function connection(ws) {
         }
 
         try {
-          //gameObj.playerB.send(JSON.stringify(messages.O_DISABLE));
           gameObj.playerB.close();
           gameObj.playerB = null;
         } catch (e) {

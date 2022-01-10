@@ -1,47 +1,13 @@
-
-// while (!player1){
-//     var player1 = prompt('Player One: Enter your name. You will be red.');
-// };
-// var player1 = "Player 1";
-// var player1Color = 'red';
-
-// // while (!player2){
-// //     var player2 = prompt('Player Two: Enter your name. You will be yellow.');
-// // };
-
-// var player2 = "Player 2";
-// var player2Color = 'yellow';
-
-// // Selectors
-
-
-// var tableRow = document.getElementsByTagName('tr');
- var tableData = document.getElementsByTagName('td');
+var tableData = document.getElementsByTagName('td');
 var tableRow = document.querySelectorAll('.slot-row');
 var playerTurn = document.querySelector('.player-turn');
 const slots = document.querySelectorAll('.slot');
 
-
-function test() {
-    console.log("Test");
-}
-
-
-
-let winner;
 playerTurn.textContent = `Player 1's turn!`
 
-// Log cell coordinates when clicked
-
-// for (i = 0; i < tableData.length; i ++){
-//     tableData[i].addEventListener('click', (e) =>{
-//         console.log(`${e.target.parentElement.rowIndex},${e.target.cellIndex}`)
-//     });
-// };
-
-
-// Funtions
-
+//pushes the token to the lowest possible position of the given column and does all the checks of the game state before 
+//it proceeds to inform the opponent
+//we provide the column clicked and the player's color
 function changeColor(column, color){
     // Get clicked column index
     let row = [];
@@ -73,20 +39,25 @@ function changeColor(column, color){
    
 }
 
+//changes the color of a given cell
 function changeColorCell(row, column, color) {
     const el = document.getElementById(`${row}${column}`);
     el.style.backgroundColor = color;
 }
 
+//reveals the hidden play again button once the game is over
 function playAgain() {
     const playButton = document.getElementById('play-again-id');
     playButton.style.display = "block";
 }
 
+// checks if four given cells are the same color
 function colorMatchCheck(one, two, three, four){
     return (one === two && one === three && one === four && one !== 'white' && one !== undefined);
 }
-
+/*
+*  methods from here below check whether four have been connected after the current move
+*/
 function horizontalCheck(){
     for (let row = 0; row < tableRow.length; row++){
         for (let col =0; col < 4; col++){

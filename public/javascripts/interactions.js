@@ -1,14 +1,11 @@
-/* eslint-disable no-undef */
-//@ts-check
-
-
-
 const clickSound = new Audio("../data/click.wav");
 
 /**
  * Game state object
- * @param {*} sb
- * @param {*} socket
+ * @param playerType - whether the player type is 'A' or 'B'
+ * @param color - red or yellow depending on the player type
+ * @param {*} sb - shows the status of the gamestate as listed in the statuses file
+ * @param {*} socket - the current client-server websocket in use
  */
 function GameState(sb, socket) {
   this.playerType = null;
@@ -33,29 +30,21 @@ GameState.prototype.setPlayerType = function (p) {
   this.playerType = p;
 };
 
+/**
+ * Retrieve the player color.
+ * @returns {string} player color
+ */
 GameState.prototype.getColor = function () {
   return this.color;
 };
 
+/**
+ * Set the player color.
+ * @param {string} c player color to set
+ */
 GameState.prototype.setColor = function (c) {
   this.color = c;
 };
-
-// /**
-//  * Check if anyone one won.
-//  * @returns {string|null} player who whon or null if there is no winner yet
-//  */
-// GameState.prototype.whoWon = function () {
-//   //too many wrong guesses? Player A (who set the word) won
-//   if (this.wrongGuesses > Setup.MAX_ALLOWED_GUESSES) {
-//     return "A";
-//   }
-//   //word solved? Player B won
-//   if (this.visibleWordArray.indexOf(Setup.HIDDEN_CHAR) < 0) {
-//     return "B";
-//   }
-//   return null; //nobody won yet
-// };
 
 /**
  * Update the game state given the slot that was just clicked.
@@ -69,13 +58,9 @@ GameState.prototype.updateGame = function (clickedSlot) {
   outgoingMsg.color = cc.color;
   this.socket.send(JSON.stringify(outgoingMsg));
 
-  // //is the game complete?
-  // const winner = this.whoWon();
-
   if (cc.type == "WINNER") {
 
-    /* disable further clicks by cloning each alphabet
-     * letter and not adding an event listener; then
+    /* disable further clicks  on the table; then
      * replace the original node through some DOM logic
      */
     const elements = document.querySelectorAll(".slot");
@@ -84,21 +69,10 @@ GameState.prototype.updateGame = function (clickedSlot) {
       el.style.pointerEvents = "none";
     });
 
-    // let alertString;
-    // if (winner == this.playerType) {
-    //   alertString = Status["gameWon"];
-    // } else {
-    //   alertString = Status["gameLost"];
-    // }
-    // alertString += Status["playAgain"];
-    // this.statusBar.setStatus(alertString);
-
-    //player sends final message
+    //player sends final message to server so that it concludes the game and alerts both players
       let finalMsg = Messages.O_GAME_WON_BY;
       finalMsg.data = this.playerType;
       this.socket.send(JSON.stringify(finalMsg));
-      //this.socket.send(JSON.stringify(Messages.O_DISABLE));
-    //this.socket.close();
   } else if (cc.type == "DRAW") {
       const elements = document.querySelectorAll(".slot");
       Array.from(elements).forEach(function (el) {
@@ -106,7 +80,6 @@ GameState.prototype.updateGame = function (clickedSlot) {
         el.style.pointerEvents = "none";
       });
       this.socket.send(JSON.stringify(Messages.O_GAME_DRAW));
-      //this.socket.send(JSON.stringify(Messages.O_DISABLE));
   }
 };
 
@@ -124,18 +97,12 @@ GameState.prototype.updateGame = function (clickedSlot) {
       el.addEventListener("click", function singleClick(e) {
         const clickedSlot = e.target["id"];
         clickSound.play();
-
         gs.updateGame(clickedSlot);
-
-        // /*
-        //  * every letter can only be clicked once;
-        //  * here we remove the event listener when a click happened
-        //  */
-        // el.removeEventListener("click", singleClick, false);
       });
     });
   };
 
+  //disables the table of slots for the player when it's not their turn
   this.pauseEventListener = function () {
     const elements = document.getElementsByTagName('td');
 
@@ -144,6 +111,7 @@ GameState.prototype.updateGame = function (clickedSlot) {
     });
   };
 
+  //enables the table of slots for the player when it's their turn
   this.restoreEventListener = function () {
     const elements = document.getElementsByTagName('td');
 
@@ -154,7 +122,7 @@ GameState.prototype.updateGame = function (clickedSlot) {
 }
 
 /**
- * Object representing the status bar.
+ * Object representing the status bar of the gamestate containing the function that sets it
  */
  function StatusBar() {
   this.setStatus = function(status) {
@@ -162,8 +130,9 @@ GameState.prototype.updateGame = function (clickedSlot) {
   };
 }
 
-//set everything up, including the WebSocket
+//set everything up, including the WebSocket;mthis function is immediate. Here we place all the event listeners
 (function setup() {
+  //We hardcoded the address because clients don't have access to the port
   const socket = new WebSocket("ws://localhost:3000");
 
   /*
@@ -179,7 +148,16 @@ GameState.prototype.updateGame = function (clickedSlot) {
   const gs = new GameState(sb, socket);
   const slotsTableSetup = new SlotsTableSetup(gs);
   var playerTurn = document.querySelector('.player-turn');
-
+  /**
+   * Determine what the client should do with each message it receives from the server:
+   * game started
+   * player type
+   * disable
+   * enable to make a turn
+   * game lost/won
+   * draw
+   * @param {*} event 
+   */
   socket.onmessage = function (event) {
     let incomingMsg = JSON.parse(event.data);
     console.log('incomingMsg  ', incomingMsg);
@@ -187,14 +165,11 @@ GameState.prototype.updateGame = function (clickedSlot) {
     if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
       gs.setPlayerType(incomingMsg.data);
       gs.setColor(gs.getPlayerType() == 'A' ? 'red' : 'yellow');
-      // document.getElementById('player-ball').style.backgroundColor = gs.getColor();
       if (gs.getPlayerType() == 'A' ) {
         document.getElementById('player-ball-red').style.display = 'block';
       } else {
         document.getElementById('player-ball-yellow').style.display = 'block';
       }
-      // debugger
-      // document.getElementById('player-ball').style.animation = gs.getColor() == "red" ? "flicker-red" : "flicker-yellow";
       playerTurn.textContent = gs.getPlayerType() == 'A' ? "Player 1" : "Player 2";
     }
     if (incomingMsg.type == Messages.T_GAME_STARTED) {
@@ -241,6 +216,7 @@ GameState.prototype.updateGame = function (clickedSlot) {
     }
   };
 
+  //client sends an empty message once the slot opens so that the server responds by assigning it a player type
   socket.onopen = function () {
     socket.send("{}");
   };

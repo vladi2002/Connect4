@@ -1,8 +1,7 @@
-// @ts-nocheck
-
 (function (exports) {
   /*
    * Client to server: game is complete, the winner is ...
+   * Also server to client: you won
    */
   exports.T_GAME_WON_BY = "GAME-WON-BY";
   exports.O_GAME_WON_BY = {
@@ -11,6 +10,7 @@
   };
   exports.S_GAME_WON_BY = JSON.stringify(exports.O_GAME_WON_BY);
 
+  //server alerts the client that its user has lost the game
   exports.T_GAME_LOST_BY = "GAME-LOST-BY";
   exports.O_GAME_LOST_BY = {
     type: exports.T_GAME_LOST_BY,
@@ -18,6 +18,7 @@
   };
   exports.S_GAME_LOST_BY = JSON.stringify(exports.O_GAME_LOST_BY);
 
+  //message to send to clients when there's a draw
   exports.T_GAME_DRAW = "GAME-DRAW";
   exports.O_GAME_DRAW = {
     type: exports.T_GAME_DRAW,
@@ -41,6 +42,7 @@
   };
   exports.S_GAME_STARTED = JSON.stringify(exports.O_GAME_STARTED);
 
+  //server to player: you are disabled; it's not your turn
   exports.T_DISABLE ="PLAY-DISABLED";
   exports.O_DISABLE = {
     type: exports.T_DISABLE,
@@ -77,7 +79,7 @@
   };
 
     /*
-   * Player B to server OR server to Player A: guessed character
+   * Player B/A to server OR server to Player A/B: turn active
    */
     exports.T_PICK_A_SLOT = "PICK-A-SLOT";
     exports.O_PICK_A_SLOT = {
