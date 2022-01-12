@@ -1,6 +1,9 @@
 
 const websocket = require("ws");
-
+/**
+ * Create game
+ * @param  {} gameID
+ */
 const game = function(gameID) {
     this.playerA = null;
     this.playerB = null;
@@ -8,6 +11,9 @@ const game = function(gameID) {
     this.gameState = "0 JOINED"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
 };
 
+/**
+ * Valid transitions
+ */
 game.prototype.transitionStates = { 
     "0 JOINED": 0, 
     "1 JOINED": 1, 
@@ -18,12 +24,17 @@ game.prototype.transitionStates = {
     "ABORTED": 6
 };
 
-//shows whether the current game has 2 players
+/**
+ * Shows whether the current game has 2 players
+ */
 game.prototype.hasTwoConnectedPlayers = function() {
     return this.gameState == "2 JOINED";
 };
 
-//adds a player p to the game if it's possible and sets the game's status accordingly
+/**
+ * Adds a player p to the game if it's possible and sets the game's status accordingly
+ * @param  {} p
+ */
 game.prototype.addPlayer = function(p) {
     if (this.gameState != "0 JOINED" && this.gameState != "1 JOINED") {
       return new Error(

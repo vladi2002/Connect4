@@ -5,9 +5,13 @@ const slots = document.querySelectorAll('.slot');
 
 playerTurn.textContent = `Player 1's turn!`
 
-//pushes the token to the lowest possible position of the given column and does all the checks of the game state before 
-//it proceeds to inform the opponent
-//we provide the column clicked and the player's color
+/**
+ * Pushes the token to the lowest possible position of the given column and does all the checks of the game state before 
+ * it proceeds to inform the opponent
+ * we provide the column clicked and the player's color
+ * @param  {} column
+ * @param  {} color
+ */
 function changeColor(column, color){
     // Get clicked column index
     let row = [];
@@ -39,23 +43,39 @@ function changeColor(column, color){
    
 }
 
-//changes the color of a given cell
+/**
+ * Changes the color of a given cell
+ * 
+ * @param  {} row
+ * @param  {} column
+ * @param  {} color
+ */
 function changeColorCell(row, column, color) {
     const el = document.getElementById(`${row}${column}`);
     el.style.backgroundColor = color;
 }
 
-//reveals the hidden play again button once the game is over
+/**
+ * Reveals the hidden play again button once the game is over
+ */
 function playAgain() {
     const playButton = document.getElementById('play-again-id');
     playButton.style.display = "block";
 }
 
-// checks if four given cells are the same color
+/**
+ * Checks if four given cells are the same color
+ * 
+ * @param  {} one
+ * @param  {} two
+ * @param  {} three
+ * @param  {} four
+ */
 function colorMatchCheck(one, two, three, four){
     return (one === two && one === three && one === four && one !== 'white' && one !== undefined);
 }
-/*
+
+/**
 *  methods from here below check whether four have been connected after the current move
 */
 function horizontalCheck(){
@@ -69,6 +89,9 @@ function horizontalCheck(){
     }
 }
 
+/**
+ * verticalCheck
+ */
 function verticalCheck(){
     for (let col = 0; col < 7; col++){
         for (let row = 0; row < 3; row++){
@@ -80,6 +103,9 @@ function verticalCheck(){
     }
 }
 
+/**
+ * diagonalCheck
+ */
 function diagonalCheck(){
     for(let col = 0; col < 4; col++){
         for (let row = 0; row < 3; row++){
@@ -92,6 +118,9 @@ function diagonalCheck(){
 
 }
 
+/**
+ * diagonalCheck2
+ */
 function diagonalCheck2(){
     for(let col = 0; col < 4; col++){
         for (let row = 5; row > 2; row--){
@@ -103,6 +132,9 @@ function diagonalCheck2(){
     }
 }
 
+/**
+ * drawCheck
+ */
 function drawCheck(){
     let fullSlot = []
     for (i=0; i < tableData.length; i++){

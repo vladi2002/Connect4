@@ -49,7 +49,6 @@
   };
   exports.S_DISABLE = JSON.stringify(exports.O_DISABLE);
 
-
   /*
    * Server to client: set as player A
    */
@@ -78,16 +77,16 @@
     data: null,
   };
 
-    /*
+  /*
    * Player B/A to server OR server to Player A/B: turn active
    */
-    exports.T_PICK_A_SLOT = "PICK-A-SLOT";
-    exports.O_PICK_A_SLOT = {
-      type: exports.T_PICK_A_SLOT,
-      row: null,
-      col: null,
-      color: null,
-    };
+  exports.T_PICK_A_SLOT = "PICK-A-SLOT";
+  exports.O_PICK_A_SLOT = {
+    type: exports.T_PICK_A_SLOT,
+    row: null,
+    col: null,
+    color: null,
+  };
     
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);
 //if exports is undefined, we are on the client; else the server

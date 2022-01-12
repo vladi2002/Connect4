@@ -22,6 +22,7 @@ main {
 #middle {
   position: relative;
 }
+
 #title {
   position: absolute;
   top: 50px;
@@ -42,6 +43,7 @@ main {
   filter: blur(3px);
   -webkit-filter: blur(3px);
 }
+
 #right {
   background-image:url(../Photos/pixomatic_1640513212342.png);
   background-position: right;
@@ -60,7 +62,6 @@ h3 {
   padding: 10px;
 }
 
-
 .form-wrapper {
   display: flex;
   width: 100%;
@@ -70,11 +71,9 @@ h3 {
 }
 
 button {
-  /* position: absolute; */
   background-color: #2E8BC0;
   border-radius: 25%;
   color: var(--text);
-  /* bottom: 180px; */
   font-family: 'Common Pixel', sans-serif;
   font-size: calc(300% + 2vw);
   border: none;
@@ -118,8 +117,8 @@ button:hover {
   height: 50px;
   justify-content: center;
   color: var(--buttonHover);
-
 }
+
 .stats-box {
   text-align: center;
   justify-content: center;

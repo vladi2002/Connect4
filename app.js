@@ -8,7 +8,7 @@ const gameStatus = require("./statTracker");
 const Game = require("./game");
 const { gamesCompleted } = require("./statTracker");
 
-//if we've provided less words
+//if we've provided less parameters
 if(process.argv.length < 3) {
   console.log("Error: expected a port as argument (eg. 'node app.js 3000').");
   process.exit(1);
@@ -53,7 +53,6 @@ setInterval(function() {
 let currentGame = new Game(gameStatus.gamesInitialized++);
 let connectionID = 0; //each websocket receives a unique ID
 wss.on("connection", function connection(ws) {
-  //debugger
   /*
    * two-player game: every two players are added to the same game
    */
@@ -97,6 +96,7 @@ wss.on("connection", function connection(ws) {
         gameObj.playerB.send(messages.S_DISABLE);
       }, 2000);
     }
+
     if (isPlayerA && oMsg.type == messages.T_PICK_A_SLOT) {
       gameObj.playerB.send(message);
       gameObj.playerA.send(messages.S_DISABLE);
@@ -119,8 +119,8 @@ wss.on("connection", function connection(ws) {
         gameObj.playerB.send(messages.S_GAME_WON_BY);
         gameObj.playerA.send(messages.S_GAME_LOST_BY);
       }
-
     }
+    
     if(oMsg.type == messages.T_GAME_DRAW) {
       gameObj.setStatus("DRAW");
       gameStatus.gamesCompleted++;
@@ -131,7 +131,11 @@ wss.on("connection", function connection(ws) {
     }
   });
 
-  //determine what happens when we abort the game or a client's connection is disturbed
+  /**
+   * Determine what happens when we abort the game or a client's connection is disturbed
+   * @param  {} "close"
+   * @param  {} function(code
+   */
   con.on("close", function(code) {
     /*
      * code 1001 means almost always closing initiated by the client;

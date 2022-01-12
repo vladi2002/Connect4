@@ -130,7 +130,9 @@ GameState.prototype.updateGame = function (clickedSlot) {
   };
 }
 
-//set everything up, including the WebSocket;mthis function is immediate. Here we place all the event listeners
+/**
+ * Set everything up, including the WebSocket;mthis function is immediate. Here we place all the event listeners
+ */
 (function setup() {
   //We hardcoded the address because clients don't have access to the port
   const socket = new WebSocket("ws://localhost:3000");
@@ -148,6 +150,7 @@ GameState.prototype.updateGame = function (clickedSlot) {
   const gs = new GameState(sb, socket);
   const slotsTableSetup = new SlotsTableSetup(gs);
   var playerTurn = document.querySelector('.player-turn');
+  
   /**
    * Determine what the client should do with each message it receives from the server:
    * game started
